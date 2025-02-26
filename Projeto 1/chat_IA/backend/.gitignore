@@ -1,0 +1,17 @@
+# Arquivos de ambiente
+.env
+
+# Pastas e arquivos gerados automaticamente
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ambientes virtuais
+venv/
+
+# Configurações do VSCode (opcional)
+.vscode/
+
+# Arquivos do MacOS (se estiver usando)
+.DS_Store

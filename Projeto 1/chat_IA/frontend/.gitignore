@@ -1,0 +1,26 @@
+# 🚀 Ignorar arquivos do Streamlit + Python
+
+# Variáveis de ambiente e credenciais
+.env
+
+# Cache e arquivos compilados do Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ambiente virtual do Python
+venv/
+*.venv/
+
+# Arquivos de logs
+*.log
+
+# Configuração do Streamlit
+.streamlit/secrets.toml
+
+# Configuração do VSCode (opcional)
+.vscode/
+
+# Arquivos do MacOS
+.DS_Store
