@@ -25,6 +25,16 @@ def carregar_mensagens(token, chat_id):
         st.error(f"Erro ao carregar mensagens (Código {response.status_code}): {response.text}")
         return []
 
+# Buscar o nome atualizado do chat
+def obter_nome_chat(chat_id, token):
+    headers = {"Authorization": f"Bearer {token}"}
+    response = requests.get(f"{API_URL}/chats/{chat_id}", headers=headers)
+    
+    if response.status_code == 200:
+        return response.json().get("titulo", f"Chat {chat_id}")  # Retorna o nome atualizado ou "Chat {id}"
+    
+    return f"Chat {chat_id}"  # Se houver erro, retorna apenas o id
+
 # 🔹 Página principal do chat
 def chat_page():
     if "token" not in st.session_state:
@@ -43,8 +53,11 @@ def chat_page():
         st.session_state["mensagens"] = carregar_mensagens(token, chat_id)
         st.session_state["last_chat_id"] = chat_id
 
-    # 🔹 Exibir histórico do chat
-    st.subheader(f"Chat {chat_id}")
+    # 🔹 Exibir nome e histórico do chat
+    if "chat_id" in st.session_state:
+        chat_id = st.session_state["chat_id"]
+        nome_chat = obter_nome_chat(chat_id, st.session_state["token"])  # Busca o nome atualizado
+        # st.subheader(nome_chat)  # Exibe o nome atualizado do chat
 
     if not st.session_state["mensagens"]:
         st.info("Nenhuma mensagem neste chat ainda.")

@@ -1,3 +1,4 @@
+# OPENAI
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from openai import OpenAI
@@ -25,7 +26,7 @@ def obter_dados_do_banco():
         SELECT 
             f.idfazenda, f.nome AS fazenda_nome, f.municipio, f.estado,
             a.idanimal_inseminado, a.numero_animal, a.lote, a.raca AS raca_animal, a.categoria, a.ECC, a.ciclicidade,
-            i.idinseminacao, i.protocolo, i.touro, i.raca_touro, i.empresa_touro, i.inseminador, 
+            i.idinseminacao, i.protocolo, i.implante_p4, i.empresa, i.gnrh_na_IA, i.pgf_no_d0, i.dose_pgf_retirada, i.marca_pgf_retirada, i.dose_ce, i.ECG, i.dose_ecg, i.touro, i.raca_touro, i.empresa_touro, i.inseminador, 
             i.numero_IATF, i.DG, i.vazia_com_ou_sem_CL, i.perda
         FROM fazenda f
         JOIN animal_inseminado a ON f.idfazenda = a.idfazenda
@@ -36,12 +37,14 @@ def obter_dados_do_banco():
         cursor.execute(sql)
         registros = cursor.fetchall()
 
-        # 🔍 Formatando os dados para o prompt
         dados_formatados = "\n\n".join([
             f"🏡 **Fazenda:** {r['fazenda_nome']} ({r['municipio']}, {r['estado']})\n"
             f"🐂 Animal: {r['numero_animal']} (Lote: {r['lote']}, Raça: {r['raca_animal']}, ECC: {r['ECC']})\n"
-            f"🧬 Protocolo: {r['protocolo']} (Touro: {r['touro']}, Raça do Touro: {r['raca_touro']}, Empresa: {r['empresa_touro']})\n"
-            f"Inseminador: {r['inseminador']}, Nº IATF: {r['numero_IATF']}, DG: {r['DG']}, Perda: {r['perda']}"
+            f"🧬 Protocolo: {r['protocolo']} | Implante P4: {r['implante_p4']} | Empresa: {r['empresa']}\n"
+            f"GnRH na IA: {r['gnrh_na_IA']} | PGF no D0: {r['pgf_no_d0']} | Dose PGF Retirada: {r['dose_pgf_retirada']} | Marca PGF: {r['marca_pgf_retirada']}\n"
+            f"Dose CE: {r['dose_ce']} | ECG: {r['ECG']} | Dose ECG: {r['dose_ecg']}\n"
+            f"Touro: {r['touro']} (Raça: {r['raca_touro']}, Empresa: {r['empresa_touro']})\n"
+            f"Inseminador: {r['inseminador']} | Nº IATF: {r['numero_IATF']} | DG: {r['DG']} | Vazia com/s/ CL: {r['vazia_com_ou_sem_CL']} | Perda: {r['perda']}"
             for r in registros
         ])
 
@@ -180,10 +183,10 @@ def obter_resposta_da_llm(mensagem_usuario, historico, dados_banco):
         Você pode consultar o banco de dados e responder perguntas baseadas nas informações armazenadas.
 
         **Estrutura do banco de dados:**
-        - Tabela `fazenda`: contém as fazendas cadastradas, incluindo `idfazenda`, `nome`, `municipio`, `estado`.
-        - Tabela `animal_inseminado`: contém os animais inseminados, incluindo `idanimal_inseminado`, `numero_animal`, `lote`, `raca`, `categoria`, `ECC`, `ciclicidade`, `idfazenda`.
-        - Tabela `inseminacao`: contém os detalhes da inseminação, incluindo `idinseminacao`, `protocolo`, `touro`, `raca_touro`, `empresa_touro`, `inseminador`, `numero_IATF`, `DG`, `vazia_com_ou_sem_CL`, `perda`, `idanimal_inseminado`.
-
+        - Tabela `fazenda`: contém as fazendas cadastradas (`idfazenda`, `nome`, `municipio`, `estado`).
+        - Tabela `animal_inseminado`: contém os animais inseminados (`idanimal_inseminado`, `numero_animal`, `lote`, `raca`, `categoria`, `ECC`, `ciclicidade`, `idfazenda`).
+        - Tabela `inseminacao`: contém os detalhes da inseminação (`idinseminacao`, `protocolo`, `implante_p4`, `empresa`, `gnrh_na_IA`, `pgf_no_d0`, `dose_pgf_retirada`, `marca_pgf_retirada`, `dose_ce`, `ECG`, `dose_ecg`, `touro`, `raca_touro`, `empresa_touro`, `inseminador`, `numero_IATF`, `DG`, `vazia_com_ou_sem_CL`, `perda`, `
+        
         **Histórico da conversa:**
         {historico}
 

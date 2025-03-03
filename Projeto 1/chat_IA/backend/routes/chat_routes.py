@@ -29,7 +29,6 @@ def criar_chat():
 
     return jsonify({'message': 'Chat criado com sucesso!', 'chat_id': chat_id, 'titulo': titulo}), 201
 
-
 # Listar chats do usuário autenticado
 @chat_bp.route('/chats', methods=['GET'])
 @jwt_required()
@@ -71,3 +70,39 @@ def deletar_chat(chat_id):
     conn.close()
 
     return jsonify({'message': 'Chat excluído com sucesso!'}), 200
+
+# Atualizar nome do chat
+@chat_bp.route('/chats/<int:chat_id>', methods=['PUT'])
+@jwt_required()
+def atualizar_chat(chat_id):
+    usuario_id = get_jwt_identity()
+    data = request.json
+    novo_nome = data.get('titulo')
+
+    if not novo_nome:
+        return jsonify({"message": "Dê um nome ao chat!"}), 400
+    
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    try:
+        #Verificar se o chat pertence ao usuário
+        cursor.execute("SELECT idchat FROM chat WHERE idchat = %s AND idusuario = %s", (chat_id, usuario_id))
+        chat = cursor.fetchone()
+
+        if not chat:
+            return jsonify({"message": "Chat não encontrado ou não pertence ao usuário!"}), 404
+        
+        # Atualizar o nome do chat
+        cursor.execute("UPDATE chat SET titulo = %s WHERE idchat = %s", (novo_nome, chat_id))
+        conn.commit()
+
+        return jsonify({"message": "Chat atualizado com sucesso!"}), 200
+    
+    except Exception as e:
+        conn.rollback()
+        return jsonify({"message": "Erro ao atualizar o chat", "error": str(e)}),500
+    
+    finally:
+        cursor.close()
+        conn.close()
