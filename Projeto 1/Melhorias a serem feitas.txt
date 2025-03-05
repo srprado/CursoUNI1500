@@ -1,0 +1,9 @@
+Frontend:
+- fixar botão de sair;
+- deixar a msg do usuário e da LLM em lados opostos;
+- diminuir figurinhas do menu lateral;
+- melhorar o layout
+
+Backend:
+- fazer com q a LLM gere consultas SQLs próprias para responder o usuário ao invés de uma só e inferir a resposta, pois isso causa erros as vezes;
+- embeddings para as demais informações;

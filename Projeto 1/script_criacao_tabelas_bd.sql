@@ -77,7 +77,7 @@ create table inseminacao(
 );
 
 select * from fazenda;
-select * from animal_inseminado;
+select * from animal_inseminado where idfazenda = 6;
 select * from inseminacao;
 select * from usuario;
 select * from chat;
@@ -85,7 +85,7 @@ select * from mensagem;
 
 select * from animal_inseminado where raca = "Nelore";
 SELECT * FROM animal_inseminado;
-SELECT * FROM inseminacao;
+SELECT * FROM inseminacao where protocolo = "9 dias" and perda = 0;
 
 
 SELECT
@@ -112,7 +112,19 @@ SELECT
             i.numero_IATF, i.DG, i.vazia_com_ou_sem_CL, i.perda
         FROM fazenda f
         JOIN animal_inseminado a ON f.idfazenda = a.idfazenda
-        JOIN inseminacao i ON a.idanimal_inseminado = i.idanimal_inseminado
+        JOIN inseminacao i ON a.idanimal_inseminado = i.idanimal_inseminado;
+
+select * from fazenda;
+ALTER TABLE fazenda ADD COLUMN embedding JSON;
+INSERT INTO fazenda (nome, municipio, estado) VALUES
+('Fazenda Boa Esperança', 'Ribeirão Preto', 'SP'),
+('Fazenda Santo Antônio', 'Uberaba', 'MG'),
+('Fazenda Verde Vale', 'Campo Grande', 'MS'),
+('Fazenda Santa Luzia', 'Goiânia', 'GO'),
+('Fazenda São João', 'Dourados', 'MS');
+
+
+select * from animal_inseminado where idfazenda=4;
 
 
 
