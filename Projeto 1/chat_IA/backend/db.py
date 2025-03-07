@@ -4,7 +4,7 @@ import mysql.connector
 db_config = {
     'host': 'localhost',
     'user': 'root',
-    'password': 'sua senha do bd',
+    'password': 'sua senha aqui',
     'database': 'chat_ia_db'
 }
 

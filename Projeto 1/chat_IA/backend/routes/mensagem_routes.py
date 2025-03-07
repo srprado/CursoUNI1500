@@ -18,7 +18,7 @@ OPENAI_MODEL = "gpt-4o"
 
 client = OpenAI(api_key=OPENAI_API_KEY)
 
-# EMBEDDINGS
+# ✅ Embeddings da mensagem do usuário
 def gerar_embedding(texto):
     """ Gera um embedding para um texto usando OpenAI """
     try:
@@ -32,6 +32,7 @@ def gerar_embedding(texto):
         print(f"Erro ao gerar embedding: {e}")
         return None
 
+# ✅ Função para obter o nome de fazenda mais similar ao digitado pelo usuário
 def encontrar_fazenda_similar(nome_fazenda_digitado):
     """
     Encontra a fazenda mais similar ao nome digitado pelo usuário usando embeddings armazenados no banco.
@@ -79,48 +80,7 @@ def encontrar_fazenda_similar(nome_fazenda_digitado):
         cursor.close()
         conn.close()
 
-# def obter_dados_do_banco():
-#     conn = get_connection()
-#     cursor = conn.cursor(dictionary=True)
-
-#     try:
-#         # 🔗 Consulta completa unindo todas as tabelas
-#         sql = """
-#         SELECT 
-#             f.idfazenda, f.nome AS fazenda_nome, f.municipio, f.estado,
-#             a.idanimal_inseminado, a.numero_animal, a.lote, a.raca AS raca_animal, a.categoria, a.categoria, a.ECC, a.ciclicidade,
-#             i.idinseminacao, i.protocolo, i.implante_p4, i.empresa, i.gnrh_na_IA, i.pgf_no_d0, i.dose_pgf_retirada, i.marca_pgf_retirada, i.dose_ce, i.ECG, i.dose_ecg, i.touro, i.raca_touro, i.empresa_touro, i.inseminador, 
-#             i.numero_IATF, i.DG, i.vazia_com_ou_sem_CL, i.perda
-#         FROM fazenda f
-#         JOIN animal_inseminado a ON f.idfazenda = a.idfazenda
-#         JOIN inseminacao i ON a.idanimal_inseminado = i.idanimal_inseminado
-#         """
-
-#         print(f"📌 CONSULTA SQL: {sql}")  # 👀 Ver consulta
-#         cursor.execute(sql)
-#         registros = cursor.fetchall()
-
-#         dados_formatados = "\n\n".join([
-#             f"**Fazenda:** {r['fazenda_nome']} ({r['municipio']}, {r['estado']})\n"
-#             f"Animal Inseminado: {r['numero_animal']} (Lote: {r['lote']}, Raça: {r['raca_animal']}, Categoria: {r['categoria']}, ECC: {r['ECC']}, Ciclicidade: {r['ciclicidade']})\n"
-#             f"Protocolo: {r['protocolo']} | Implante P4: {r['implante_p4']} | Empresa: {r['empresa']}\n"
-#             f"GnRH na IA: {r['gnrh_na_IA']} | PGF no D0: {r['pgf_no_d0']} | Dose PGF Retirada: {r['dose_pgf_retirada']} | Marca PGF: {r['marca_pgf_retirada']}\n"
-#             f"Dose CE: {r['dose_ce']} | ECG: {r['ECG']} | Dose ECG: {r['dose_ecg']}\n"
-#             f"Touro: {r['touro']} (Raça: {r['raca_touro']}, Empresa: {r['empresa_touro']})\n"
-#             f"Inseminador: {r['inseminador']} | Nº IATF: {r['numero_IATF']} | DG: {r['DG']} | Vazia com/s CL: {r['vazia_com_ou_sem_CL']} | Perda: {r['perda']}\n"
-#             for r in registros
-#         ])
-
-#         return dados_formatados        
-
-#     except Exception as e:
-#         print("❌ ERRO AO BUSCAR DADOS DO BANCO:", str(e))
-#         return "Não foi possível acessar os dados do banco."
-
-#     finally:
-#         cursor.close()
-#         conn.close()
-
+# ✅ Função para obter dados do banco de dados
 def obter_dados_do_banco(mensagem_usuario):
     """
     Obtém dados do banco dependendo do tipo de pergunta do usuário:
@@ -197,9 +157,7 @@ def obter_dados_do_banco(mensagem_usuario):
         cursor.close()
         conn.close()
 
-# ---------------------------
 # ✅ Função para obter histórico do chat do usuário
-# ---------------------------
 def obter_historico(chat_id, usuario_id):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
@@ -228,9 +186,7 @@ def obter_historico(chat_id, usuario_id):
         cursor.close()
         conn.close()
 
-# ---------------------------
 # ✅ Enviar mensagem e obter resposta da OpenAI
-# ---------------------------
 @mensagem_bp.route('/mensagens', methods=['POST'])
 @jwt_required()
 def enviar_mensagem():
@@ -276,9 +232,7 @@ def enviar_mensagem():
         cursor.close()
         conn.close()
 
-# ---------------------------
 # ✅ Função extrair SQL da resposta da IA (OpenAI)
-# ---------------------------
 def extrair_sql(texto):
     padrao = r"SELECT .*? FROM .*?(?: WHERE .*?)?(?: GROUP BY .*?)?(?: ORDER BY .*?)?"
     correspondencias = re.findall(padrao, texto, re.DOTALL | re.IGNORECASE)
@@ -287,9 +241,7 @@ def extrair_sql(texto):
         return correspondencias[0]  # Retorna a primeira consulta SQL encontrada
     return None
 
-# ---------------------------
 # ✅ Função executar SQL extraida da resposta da IA (OpenAI)
-# ---------------------------
 def executar_consulta_sql(sql_query):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
@@ -312,9 +264,7 @@ def executar_consulta_sql(sql_query):
         cursor.close()
         conn.close()
 
-# ---------------------------
 # ✅ Função para chamar a API do ChatGPT (OpenAI)
-# ---------------------------
 def obter_resposta_da_llm(mensagem_usuario, historico, dados_banco):
     try:
         prompt = f"""
@@ -363,9 +313,7 @@ def obter_resposta_da_llm(mensagem_usuario, historico, dados_banco):
         print("❌ ERRO NA OPENAI:", str(e))
         return f"Erro ao conectar com a LLM (OpenAI): {str(e)}"
 
-# ---------------------------
 # ✅ Listar mensagens de um chat específico
-# ---------------------------
 @mensagem_bp.route('/mensagens/<int:chat_id>', methods=['GET'])
 @jwt_required()
 def listar_mensagens(chat_id):
