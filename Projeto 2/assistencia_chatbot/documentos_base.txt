@@ -1,0 +1,12 @@
+
+Impressora Canon PIXMA G3111 - Erro de almofada de tinta saturada.
+Para resolver, remova a tampa traseira, substitua a almofada e reinicie o contador via software.
+
+Impressora Epson L3150 - Problema de atolamento de papel.
+Verifique o caminho do papel, remova papel preso, limpe roletes e reinicie a impressora.
+
+Impressora HP DeskJet Ink Advantage 2774 - Não liga.
+Verifique o cabo de energia, a fonte e tente ligar em outra tomada.
+
+Solicitação de visita técnica pode ser necessária se o cliente relatar que o equipamento não liga,
+apresenta barulhos anormais ou falhas persistentes mesmo após orientações.
